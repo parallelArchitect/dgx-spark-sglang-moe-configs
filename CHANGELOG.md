@@ -7,7 +7,9 @@ with hardware instrumentation tooling for DGX Spark (GB10, SM121).
 
 ---
 
-## [Unreleased] — parallelArchitect fork
+## [fbf0db5] — 2026-05-16 — parallelArchitect
+
+> Status: experimental — GB10 hardware validation pending.
 
 ### Added
 
@@ -22,6 +24,7 @@ with hardware instrumentation tooling for DGX Spark (GB10, SM121).
   `--report`, `--config-dir`, and `--baseline` flags. `NVMLDirect` telemetry
   layer ported from
   [spark-gpu-throttle-check v2.1.0](https://github.com/parallelArchitect/spark-gpu-throttle-check).
+- `CHANGELOG.md` — this file.
 
 ---
 
