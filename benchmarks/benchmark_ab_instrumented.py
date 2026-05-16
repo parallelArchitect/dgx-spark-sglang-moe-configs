@@ -76,13 +76,43 @@ _BASELINE_SEARCH = [
 
 
 def find_triton_config_dir(override=None):
-    """Auto-discover Triton MoE config dir on GB10."""
+    """Auto-discover Triton MoE config dir on GB10.
+    If static search fails, runs find command and prompts user to confirm."""
     if override and os.path.isdir(override):
         return override
     for path in _TRITON_CONFIG_SEARCH:
         if os.path.isdir(path):
             return path
-    return None
+
+    # Static search failed — try find command
+    import subprocess
+    print(f"  {YELLOW}Triton config dir not found in known paths — searching...{RESET}")
+    try:
+        result = subprocess.run(
+            ["find", "/", "-path", "*/fused_moe_triton/configs", "-type", "d"],
+            capture_output=True, text=True, timeout=30
+        )
+        candidates = [l.strip() for l in result.stdout.splitlines() if l.strip()]
+        if not candidates:
+            return None
+        if len(candidates) == 1:
+            path = candidates[0]
+            print(f"  Found: {path}")
+            answer = input("  Use this path? [Y/n]: ").strip().lower()
+            if answer in ("", "y", "yes"):
+                return path
+            return None
+        else:
+            print("  Multiple paths found:")
+            for i, p in enumerate(candidates):
+                print(f"    [{i}] {p}")
+            answer = input("  Enter number to use: ").strip()
+            try:
+                return candidates[int(answer)]
+            except (ValueError, IndexError):
+                return None
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        return None
 
 
 def find_kernel_sweep_baseline(override=None):
