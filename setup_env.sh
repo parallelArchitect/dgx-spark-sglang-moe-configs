@@ -24,7 +24,7 @@ if ! command -v uv &> /dev/null; then
     export PATH="$HOME/.cargo/bin:$PATH"
 fi
 
-echo "  Creating Python 3.12 venv..."
+echo "  Creating Python 3.10 venv..."
 uv venv "$ENV_DIR" --python 3.10
 source "$ENV_DIR/bin/activate"
 
