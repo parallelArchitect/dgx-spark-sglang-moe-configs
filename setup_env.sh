@@ -25,7 +25,7 @@ if ! command -v uv &> /dev/null; then
 fi
 
 echo "  Creating Python 3.12 venv..."
-uv venv "$ENV_DIR" --python 3.12
+uv venv "$ENV_DIR" --python 3.10
 source "$ENV_DIR/bin/activate"
 
 export TORCH_CUDA_ARCH_LIST=12.1a
@@ -39,11 +39,11 @@ uv pip install torch==2.9.1 torchvision==0.24.1 torchaudio==2.9.1 \
     --index-url https://download.pytorch.org/whl/cu130
 
 echo "  Installing system dependencies..."
-sudo apt-get install -y libnuma-dev libibverbs-dev python3-dev python3.12-dev
+sudo apt-get install -y libnuma-dev libibverbs-dev python3-dev python3.10-dev
 
 echo "  Installing SGLang..."
 uv pip install build wheel "cmake<4.0" ninja scikit-build-core
-uv pip install "sglang[all]" --index-url https://docs.sglang.ai/whl/cu130
+uv pip install "sglang[all]" --prerelease=allow --index-url https://docs.sglang.ai/whl/cu130
 
 echo
 echo "=== Setup complete. Run: ./run.sh ==="
