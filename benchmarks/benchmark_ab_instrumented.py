@@ -543,34 +543,33 @@ def show_comparison(current: dict, baseline: dict):
 # ─── Inference benchmark (from baristankut, instrumented) ────────────────────
 
 def run_benchmark(label: str, prompts: list, sampler: HardwareSampler) -> dict:
-    """Run vLLM inference benchmark with hardware telemetry in background."""
-    from vllm import LLM, SamplingParams
+    """Run SGLang inference benchmark with hardware telemetry in background."""
+    from sglang import Engine, SamplingParams
 
     print(f"\n=== {label} ===")
     print(f"  Model: {MODEL}")
 
-    llm = LLM(
-        model=MODEL,
-        tensor_parallel_size=1,
-        max_model_len=4096,
-        gpu_memory_utilization=0.85,
-        enforce_eager=True,
+    engine = Engine(
+        model_path=MODEL,
+        tp_size=1,
+        context_length=4096,
+        mem_fraction_static=0.85,
     )
 
-    sampling_params = SamplingParams(temperature=0.0, max_tokens=256)
+    sampling_params = SamplingParams(temperature=0.0, max_new_tokens=256)
 
     print("  Warmup...")
-    llm.generate(["Hello"], sampling_params)
+    engine.generate(["Hello"], sampling_params)
 
     results = []
     for i in range(3):
         sampler.mark_round(i + 1, f"{label} round {i + 1} start")
         t_start = time.perf_counter()
-        outputs = llm.generate(prompts, sampling_params)
+        outputs = engine.generate(prompts, sampling_params)
         elapsed = time.perf_counter() - t_start
         sampler.mark_round(i + 1, f"{label} round {i + 1} end")
 
-        total_tokens = sum(len(o.outputs[0].token_ids) for o in outputs)
+        total_tokens = sum(o["meta_info"]["completion_tokens"] for o in outputs)
         tps = total_tokens / elapsed
         results.append({
             "round": i + 1,
@@ -586,9 +585,7 @@ def run_benchmark(label: str, prompts: list, sampler: HardwareSampler) -> dict:
     avg_tps = sum(r["tok_per_s"] for r in results) / len(results)
     print(f"  Average: {BOLD}{avg_tps:.1f} tok/s{RESET}")
 
-    del llm
-    import torch
-    torch.cuda.empty_cache()
+    engine.shutdown()
     gc.collect()
 
     return {"label": label, "results": results, "avg_tok_per_s": round(avg_tps, 2)}

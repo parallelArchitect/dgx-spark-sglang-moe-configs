@@ -7,6 +7,21 @@ with hardware instrumentation tooling for DGX Spark (GB10, SM121).
 
 ---
 
+## [sglang-backend] — 2026-05-20 — parallelArchitect
+
+### Changed
+- `benchmarks/benchmark_ab_instrumented.py` — replaced vLLM inference
+  backend with SGLang `Engine` API. No container or vLLM installation
+  required. Runs directly from bare metal Python environment with SGLang
+  installed. Key changes:
+  - `LLM` → `Engine`, `model=` → `model_path=`
+  - `gpu_memory_utilization=` → `mem_fraction_static=`
+  - `max_tokens=` → `max_new_tokens=`
+  - `enforce_eager=True` removed — SGLang handles internally
+  - token count via `meta_info["completion_tokens"]` (SGLang output format)
+  - `del llm` + `torch.cuda.empty_cache()` → `engine.shutdown()`
+
+---
 ## [fbf0db5] — 2026-05-16 — parallelArchitect
 
 > Status: experimental — GB10 hardware validation pending.
