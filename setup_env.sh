@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # setup_env.sh — SGLang bare metal environment for DGX Spark (GB10, SM121)
-# Target: GB10, SM121, CUDA 13.0, driver 580.142, aarch64
+# Target: DGX Spark (GB10, SM121), CUDA 13.0, driver 580.142, aarch64
 # Run once from repo root. Then use run.sh to execute the benchmark.
 
 set -e
