@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# setup_env.sh — SGLang bare metal environment for DGX Spark / ASUS GX10
+# setup_env.sh — SGLang bare metal environment for DGX Spark (GB10, SM121)
 # Target: GB10, SM121, CUDA 13.0, driver 580.142, aarch64
 # Run once from repo root. Then use run.sh to execute the benchmark.
 
@@ -35,8 +35,8 @@ export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 export CUDA_HOME=/usr/local/cuda
 
 echo "  Installing PyTorch cu130..."
-uv pip install torch==2.9.1 torchvision==0.24.1 torchaudio==2.9.1 \
-    --index-url https://download.pytorch.org/whl/cu130
+uv pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 \
+    --extra-index-url https://download.pytorch.org/whl/cu130
 
 echo "  Installing system dependencies..."
 sudo apt-get install -y libnuma-dev libibverbs-dev python3-dev
