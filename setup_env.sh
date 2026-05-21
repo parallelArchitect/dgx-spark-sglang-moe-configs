@@ -39,7 +39,7 @@ uv pip install torch==2.9.1 torchvision==0.24.1 torchaudio==2.9.1 \
     --index-url https://download.pytorch.org/whl/cu130
 
 echo "  Installing system dependencies..."
-sudo apt-get install -y libnuma-dev libibverbs-dev python3-dev python3.10-dev
+sudo apt-get install -y libnuma-dev libibverbs-dev python3-dev
 
 echo "  Installing SGLang..."
 uv pip install build wheel "cmake<4.0" ninja scikit-build-core
